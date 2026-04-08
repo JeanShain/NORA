@@ -11,6 +11,7 @@ from db import add_album, add_song, get_songs_by_album, get_song, get_random_son
 from databaseUser import add_user, get_user_role, set_role, get_user_id_by_username
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+from aiohttp import web
 
 
 logging.basicConfig(level=logging.INFO)
@@ -510,9 +511,27 @@ async def track_user_messages(message: types.Message):
 # =======================================
 
 
+# ===== HTTPS ===========================
+async def handle(request):
+    return web.Response(text="OK")
+
+async def start_webserver():
+    app = web.Application()
+    app.router.add_get('/', handle)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+
+    port = int(os.getenv("PORT", 10000))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+# =======================================
+
+
 async def main():
     init_db()
     set_role(794485298, 'admin')  # admin | @Baster_Skrag
+    await start_webserver()
     await dp.start_polling(bot)
 
 
