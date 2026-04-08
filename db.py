@@ -81,16 +81,12 @@ def get_random_songs(limit=20):
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
-
-    # albums
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS albums (
         id TEXT PRIMARY KEY,
         title TEXT
     )
     """)
-
-    # songs
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS songs (
         id TEXT PRIMARY KEY,
@@ -100,6 +96,5 @@ def init_db():
         thumbnail TEXT
     )
     """)
-
     conn.commit()
     conn.close()
