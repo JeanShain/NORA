@@ -36,8 +36,9 @@ def get_user_role(user_id):
 
 def set_role(user_id, role):
     cursor.execute(
-        "UPDATE users SET role = ? WHERE user_id = ?",
-        (role, user_id)
+        "INSERT INTO users (user_id, role) VALUES (?, ?) "
+        "ON CONFLICT(user_id) DO UPDATE SET role=excluded.role",
+        (user_id, role)
     )
     conn.commit()
 
