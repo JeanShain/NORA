@@ -7,7 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from db import add_album, add_song, get_songs_by_album, get_song, get_random_songs
+from db import add_album, add_song, get_songs_by_album, get_song, get_random_songs, init_db
 from databaseUser import add_user, get_user_role, set_role, get_user_id_by_username
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
@@ -511,6 +511,7 @@ async def track_user_messages(message: types.Message):
 
 
 async def main():
+    init_db()
     set_role(794485298, 'admin')  # admin | @Baster_Skrag
     await dp.start_polling(bot)
 
