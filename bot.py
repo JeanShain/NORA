@@ -8,7 +8,7 @@ from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from db import add_album, add_song, get_songs_by_album, get_song, get_random_songs, init_db
-from databaseUser import add_user, get_user_role, set_role, get_user_id_by_username
+from databaseUser import add_user, get_user_role, set_role, get_user_id_by_username, get_all_users
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiohttp import web
@@ -69,18 +69,53 @@ async def add_vip(message: types.Message):
         return await message.answer("🔐You don't have permission!")
 
     try:
-        username = message.text.split()[1].replace("@", "").lower()
+        arg = message.text.split()[1]
     except:
-        return await message.answer("Format: /add_vip username")
+        return await message.answer("Format: /add_vip @username \ ID")
 
-    user_id = get_user_id_by_username(username)
+    # якщо username
+    if arg.startswith("@"):
+        username = arg.replace("@", "").lower()
+        user_id = get_user_id_by_username(username)
+    else:
+        user_id = int(arg)
 
     if not user_id:
-        return await message.answer("❗User don't exist!")
+        return await message.answer("User not found!")
 
     set_role(user_id, ROLE_VIP)
 
-    await message.answer("User successfully added to vip!")
+    await message.answer(f"User {arg} is now VIP")
+
+    # 🔥 повідомлення юзеру
+    try:
+        await bot.send_message(
+            user_id,
+            "🎉 You have been upgraded to VIP!"
+        )
+    except:
+        pass
+
+@dp.message(Command("users"))
+async def list_users(message: types.Message):
+    if get_user_role(message.from_user.id) != ROLE_ADMIN:
+        return await message.answer("🔐You don't have permission!")
+
+    users = get_all_users()
+
+    if not users:
+        return await message.answer("No users found")
+
+    text = "<b>👥 USERS LIST:</b>\n\n"
+
+    for user_id, username, role in users:
+        text += (
+            f"ID: <code>{user_id}</code>\n"
+            f"Username: @{username}\n"
+            f"Role: {role}\n\n"
+        )
+
+    await message.answer(text, parse_mode="HTML")
 # =======================================
 
 
@@ -152,10 +187,7 @@ def main_menu():
 # ===== START ===========================
 @dp.message(Command('start'))
 async def start(message: types.Message):
-    add_user(
-        message.from_user.id,
-        message.from_user.username or ""
-    )
+    add_user(message.from_user.username or "no_username")
     chat_id = message.chat.id
     bot_active[chat_id] = True
     await clear_chat(chat_id)

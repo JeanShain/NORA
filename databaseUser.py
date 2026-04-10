@@ -53,3 +53,15 @@ def get_user_id_by_username(username):
     if result:
         return result[0]
     return None
+
+
+def get_all_users():
+    import sqlite3
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT user_id, username, role FROM users")
+    users = cursor.fetchall()
+
+    conn.close()
+    return users
