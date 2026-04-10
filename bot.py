@@ -4,7 +4,7 @@ import os
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandObject
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from db import add_album, add_song, get_songs_by_album, get_song, get_random_songs, init_db
@@ -187,7 +187,10 @@ def main_menu():
 # ===== START ===========================
 @dp.message(Command('start'))
 async def start(message: types.Message):
-    add_user(message.from_user.username or "no_username")
+    add_user(
+        message.from_user.id,
+        message.from_user.username or "no_username"
+    )
     chat_id = message.chat.id
     bot_active[chat_id] = True
     await clear_chat(chat_id)
@@ -535,7 +538,7 @@ async def play_song(callback: types.CallbackQuery):
 
 
 # ===== USER MSSG =======================
-@dp.message()
+@dp.message(lambda message: message.text and not message.text.startswith("/"))
 async def track_user_messages(message: types.Message):
     chat_id = message.chat.id
 
