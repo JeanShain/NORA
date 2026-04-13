@@ -450,7 +450,8 @@ async def add_song_start(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text="LIVE", callback_data="add_live")],
         [InlineKeyboardButton(text="ACOUSTIC", callback_data="add_acoustic")],
         [InlineKeyboardButton(text="DELUXE", callback_data="add_deluxe")],
-        [InlineKeyboardButton(text="THE NIGHT'22", callback_data="add_night22")]
+        [InlineKeyboardButton(text="THE NIGHT'22", callback_data="add_night22")],
+        [InlineKeyboardButton(text="NOR", callback_data="add_nor")]
     ])
 
     msg = await message.answer("📀 Обери альбом:", reply_markup=keyboard)
