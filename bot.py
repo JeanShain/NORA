@@ -7,8 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandObject
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from db import add_album, add_song, get_songs_by_album, get_song, get_random_songs, init_db
-from databaseUser import add_user, get_user_role, set_role, get_user_id_by_username, get_all_users
+from db import  add_user, get_user_role, set_role, get_user_id_by_username, get_all_users, add_song, get_songs_by_album, get_song, get_random_songs, init_db
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiohttp import web
