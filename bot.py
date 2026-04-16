@@ -543,6 +543,13 @@ async def track_user_messages(message: types.Message):
     chat_id = message.chat.id
 
     save_message(chat_id, message.message_id, "user")
+
+@dp.message(lambda message: message.text and message.text.startswith("/"))
+async def track_commands(message: types.Message):
+    add_user(
+        message.from_user.id,
+        message.from_user.username or "no_username"
+    )
 # =======================================
 
 
